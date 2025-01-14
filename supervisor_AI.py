@@ -7,47 +7,12 @@ from utils import get_llm, AgentState
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-SUPERVISOR_PROMPT = """
-You are a supervisor tasked with managing the chat messages with queries about Fixed Income intruments, an AI assistant.
-Your task is to classify the incoming questions. 
-Depending on your answer, question will be routed to the right team, so your task is crucial for our team. 
+SUPERVISOR_PROMPT = """Classify as QuoteRequest, BondRequest, or GENERAL:
 
-There are 3 possible question types: 
-- QuoteRequest - questions related to price, bid, offer for a given Fixed Income security.
-- BondRequest - questions related to information about a Fixed Income security.
-- GENERAL - general questions
-Return in the output only one word (QuoteRequest, BondRequest or  GENERAL).
-
-
-Examples
-Chat Message: 8.3774% HDB Financial Apr 26 INE756I07ER5 Qtm: 1 Cr Offer please
-Output:QuoteRequest
-
-Chat Message: Hi, INE443L08156 10% Belstar 01-Aug-2025 Available ?
-Output:QuoteRequest
-
-Chat Message: Shriram finance and Mas Financial - are long dated papers available?
-Output:QuoteRequest
-
-Chat Message: Any offer in 3-6 month A rated paper for 50 lacs
-Output:QuoteRequest
-
-Chat Message: 5 year paper available?
-Output:QuoteRequest
-
-Chat Message: Hi, 12.90 Electronica Sept 29 3 L Multiple 13.85 Satya Micro Cap July 29 2 L Multiples Pls show bids
-Output:QuoteRequest
-
-Chat Message: can you please share a brief note about AP state bonds?
-Output:BondRequest
-
-Chat Message: How is the track record of profitability?
-Output:BondRequest
-
-Chat Message: Has the AP state bonds delayed/defaulted previously?
-Output:BondRequest
-
-Using the above samples as example, interpret the chat message and respond with just the correct option
+Rules:
+QuoteRequest = price/bid/offer questions
+BondRequest = bond info questions
+GENERAL = other questions
 
 Input: {message}
 Answer with one word only:"""
